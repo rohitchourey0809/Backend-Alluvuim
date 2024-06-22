@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const dotenv = require("dotenv");
+const cors = require("cors");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const chatRoutes = require("./routes/chatRoutes");
@@ -19,6 +20,9 @@ const io = socketIo(server, {
     methods: ["GET", "POST"],
   },
 });
+
+// Enable CORS
+app.use(cors());
 
 app.use(express.json());
 app.use(rateLimiter);
