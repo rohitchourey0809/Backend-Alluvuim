@@ -16,7 +16,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*", // Allow requests from any origin (adjust as needed)
+    origin: "https://frontend-alluvuim.vercel.app", // Allow requests from any origin (adjust as needed)
     methods: ["GET", "POST"],
   },
 });
