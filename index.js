@@ -16,16 +16,15 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*",
+    origin: "*", // Allow requests from any origin (adjust as needed)
     methods: ["GET", "POST"],
   },
 });
 
-// Enable CORS
-app.use(cors());
-
-app.use(express.json());
-app.use(rateLimiter);
+// Middleware
+app.use(cors()); // Enable CORS
+app.use(express.json()); // Parse JSON bodies
+app.use(rateLimiter); // Apply rate limiting middleware
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -37,13 +36,18 @@ io.on("connection", (socket) => {
 
   socket.on("joinRoom", ({ username, room }) => {
     socket.join(room);
-    io.to(room).emit("message", {
-      user: "admin",
+    const joinMessage = {
+      user: { username: "admin" },
       text: `${username} has joined!`,
-    });
+    };
+    io.to(room).emit("message", joinMessage);
   });
 
-  socket.on("sendMessage", ({ message, room }) => {
+  socket.on("sendMessage", ({ text, username, room }) => {
+    const message = {
+      user: { username },
+      text,
+    };
     io.to(room).emit("message", message);
   });
 
