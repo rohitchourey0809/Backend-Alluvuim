@@ -15,7 +15,10 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
-  cors: true,
+  cors: {
+    origin: "*", // Allow requests from any origin (adjust as needed)
+    methods: ["GET", "POST"],
+  },
 });
 
 // Middleware
@@ -40,12 +43,18 @@ io.on("connection", (socket) => {
     io.to(room).emit("message", joinMessage);
   });
 
-  socket.on("sendMessage", ({ text, username, room }) => {
-    const message = {
-      user: { username },
+  socket.on("sendMessage", async ({ text, username, room }) => {
+    const messageData = {
+      user: username,
       text,
+      room,
     };
-    io.to(room).emit("message", message);
+
+    // Save the message to the database if required
+    // Example: Assuming you have a function to save messages in your chat controller
+
+    // Emit the message to all clients in the room
+    io.to(room).emit("message", messageData);
   });
 
   socket.on("disconnect", () => {

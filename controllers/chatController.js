@@ -25,7 +25,7 @@ const getMessages = asyncHandler(async (req, res) => {
     "user",
     "username"
   );
-
+console.log("get message", messages);
   res.json(messages);
 });
 
